@@ -30,7 +30,6 @@ public:
         Ellipse(dc, X + 45, Y + 10, X + 95, Y + 35);
     }
 };
-
 class Lighthouse
 {
 public:

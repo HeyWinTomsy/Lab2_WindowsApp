@@ -14,6 +14,7 @@ typedef struct
     float y[100];
 } FUNC;
 
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LPSTR lpszCmdLine, int nCmdShow)
 {
