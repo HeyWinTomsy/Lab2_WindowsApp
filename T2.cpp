@@ -140,6 +140,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         EndPaint(hwnd, &ps);
         return 0;
     }
+    case WM_LBUTTONDOWN:
+    {
+        POINT p = { (short)LOWORD(lParam), (short)HIWORD(lParam) };
+        g_clouds.push_back(p);                 // нова хмара в точці кліку
+        InvalidateRect(hwnd, nullptr, FALSE);
+        return 0;
+    }
+    case WM_KEYDOWN:
+        if (wParam == VK_LEFT)   g_shipX -= 15;
+        if (wParam == VK_RIGHT)  g_shipX += 15;
+        if (wParam == VK_ESCAPE) DestroyWindow(hwnd);
+        InvalidateRect(hwnd, nullptr, FALSE);
+        return 0;
+
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
@@ -149,7 +163,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
-    const wchar_t CLASS_NAME[] = L"Lab2App";
+    const wchar_t CLASS_NAME[] = L"LighthouseSeaApp";
 
     WNDCLASS wc = {};
     wc.style = CS_HREDRAW | CS_VREDRAW;

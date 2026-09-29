@@ -78,14 +78,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         wcscpy_s(myfunc.name, 30, L"y = 2*cos(x - pi/6)");
 
-        // x змінюється від 0 до 1
         for (int i = 0; i < 100; i++)
         {
-            myfunc.x[i] = (float)i / 99.0f;
-
-            // y = 2*cos(x - pi/6)
-            myfunc.y[i] =
-                2.0f * cos(myfunc.x[i] - (float)M_PI / 6.0f);
+            myfunc.x[i] = (float)i / 99.0f * 10.0f;
+            myfunc.y[i] = 2.0f * cos(myfunc.x[i]  - (float)M_PI / 6.0f);
         }
 
         return 0;
@@ -96,43 +92,25 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        // Область для малювання графіка
         int x0 = cx / 10;
         int xr = cx - x0;
         int y0 = cy / 10;
         int yc = cy / 2;
         int amp = yc - y0;
 
-        float ymax = 0.0f;
-        float ymin = 0.0f;
+        float ymax = 0.0;
+        float ymin = 0.0;
 
-        // Назва функції
-        TextOut(
-            hdc,
-            x0 + 4,
-            y0 / 3,
-            myfunc.name,
-            (int)wcslen(myfunc.name)
-        );
+        TextOut(hdc, x0 + 4, y0 / 3, myfunc.name, (int)wcslen(myfunc.name));
 
-        // Назва осі X
-        TextOut(
-            hdc,
-            xr + x0 / 2,
-            yc + y0 / 10,
-            L"x",
-            1
-        );
+        TextOut(hdc, xr + x0 / 2, yc + y0 / 10, L"x", 1);
 
-        // Вісь Y
         MoveToEx(hdc, x0, cy - y0 + y0 / 2, NULL);
         LineTo(hdc, x0, y0 - y0 / 2);
 
-        // Вісь X
         MoveToEx(hdc, x0, yc, NULL);
         LineTo(hdc, xr + x0 / 2, yc);
 
-        // Знаходимо максимум і мінімум функції
         for (int i = 0; i < 100; i++)
         {
             float ycurr = myfunc.y[i];
@@ -144,29 +122,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                 ymin = ycurr;
         }
 
-        // Враховуємо найбільше за модулем значення
         if (ymax < fabs(ymin))
             ymax = (float)fabs(ymin);
 
-        // Масштаб по Y
         float dy = (float)amp / ymax;
 
-        // Масштаб по X
-        float dx =
-            (float)(xr - x0) /
-            (myfunc.x[99] - myfunc.x[0]);
+        float dx = (float)(xr - x0) / (myfunc.x[99] - myfunc.x[0]);
 
-        // Синє перо
         HPEN hPen = CreatePen(
             PS_SOLID,
             2,
-            RGB(0, 0, 255)
+            RGB(255, 0, 0)
         );
 
         HPEN hOldPen =
             (HPEN)SelectObject(hdc, hPen);
 
-        // Перша точка
         MoveToEx(
             hdc,
             x0,
@@ -174,7 +145,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             NULL
         );
 
-        // Малюємо графік
         for (int i = 1; i < 100; i++)
         {
             int xcurr =
